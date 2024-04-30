@@ -4,7 +4,7 @@ from google.cloud import firestore
 import firebase_admin
 from firebase_admin import credentials
 #install /content/deep-speaker
-
+#numpy matplotlib.pyplot firebase_admin uuid flask google.cloud deep_speaker.audio deep_speaker.batcher deep_speaker.constants deep_speaker.conv_models deep_speaker.test  
 from deep_speaker.audio import read_mfcc
 from deep_speaker.batcher import sample_from_mfcc
 from deep_speaker.constants import SAMPLE_RATE, NUM_FRAMES

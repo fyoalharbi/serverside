@@ -1,9 +1,13 @@
 # Dockerfile
 FROM python:3.7-stretch
+ADD app.py .
+RUN pip clone https://github.com/philipperemy/deep-speaker
+RUN pip install numpy matplotlib.pyplot firebase_admin uuid flask google.cloud deep_speaker.audio deep_speaker.batcher deep_speaker.constants deep_speaker.conv_models deep_speaker.test  
+
 RUN apt-get update -y
 RUN apt-get install -y python-pip python-dev build-essential
 COPY . /app
 WORKDIR /app
 RUN pip install -r requirements.txt
 ENTRYPOINT ["python"]
-CMD ["app.py"]
+CMD ["python", "./app.py"]
