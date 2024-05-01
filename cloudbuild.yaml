@@ -4,9 +4,5 @@ steps:
 - name: "us-central1-docker.pkg.dev/myproject-db2be/serversiderepo/ml-app:tag1"
   args: ["--cache=true", "--cache-ttl=48h", "--destination=us-central1-docker.pkg.dev/myproject-db2be/serversiderepo/voices:latest"]
   # Deploy container image to Cloud Run
-- name: "gcr.io/cloud-builders/gcloud"
-<<<<<<< HEAD
+- name: "us-central1-docker.pkg.dev/cloud-builders/gcloud"
   args: ['beta', 'run', 'deploy', 'todo', '--image', 'us-central1-docker.pkg.dev/myproject-db2be/serversiderepo/todo:latest', '--region', 'us-central1', '--allow-unauthenticated', '--platform', 'managed']
-=======
-  args: ['beta', 'run', 'deploy', 'todo', '--image', 'us-central1-docker.pkg.dev/myproject-db2be/serversiderepo/todo:latest', '--region', 'us-central1', '--allow-unauthenticated', '--platform', 'managed']
->>>>>>> 8b2f3d24ec5d94430d452e8cadb9a620aa9b8bbc
