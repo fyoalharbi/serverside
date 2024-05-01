@@ -1,8 +1,8 @@
 # cloudbuild.yaml
 steps:
   # build & push the container image
-- name: "gcr.io/kaniko-project/executor:latest"
-  args: ["--cache=true", "--cache-ttl=48h", "--destination=gcr.io/$PROJECT_ID/todo:latest"]
+- name: "us-central1-docker.pkg.dev/myproject-db2be/serversiderepo/ml-app:tag1"
+  args: ["--cache=true", "--cache-ttl=48h", "--destination=us-central1-docker.pkg.dev/myproject-db2be/serversiderepo/voices:latest"]
   # Deploy container image to Cloud Run
 - name: "gcr.io/cloud-builders/gcloud"
-  args: ['beta', 'run', 'deploy', 'todo', '--image', 'gcr.io/$PROJECT_ID/todo:latest', '--region', 'us-central1', '--allow-unauthenticated', '--platform', 'managed']
+  args: ['beta', 'run', 'deploy', 'todo', '--image', 'us-central1-docker.pkg.dev/myproject-db2be/serversiderepo/todo:latest', '--region', 'us-central1', '--allow-unauthenticated', '--platform', 'managed']
