@@ -3,6 +3,9 @@ steps:
   # build & push the container image
 - name: "us-central1-docker.pkg.dev/myproject-db2be/serversiderepo/ml-app:tag1"
   args: ["--cache=true", "--cache-ttl=48h", "--destination=us-central1-docker.pkg.dev/myproject-db2be/serversiderepo/voices:latest"]
+  entrypoint: "us-central1-docker.pkg.dev/myproject-db2be/serversiderepo/ml-app:tag1"
   # Deploy container image to Cloud Run
 - name: "us-central1-docker.pkg.dev/cloud-builders/gcloud"
   args: ['beta', 'run', 'deploy', 'todo', '--image', 'us-central1-docker.pkg.dev/myproject-db2be/serversiderepo/todo:latest', '--region', 'us-central1', '--allow-unauthenticated', '--platform', 'managed']
+
+  entrypoint: "us-central1-docker.pkg.dev/myproject-db2be/serversiderepo/ml-app:tag1"
