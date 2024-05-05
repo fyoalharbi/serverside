@@ -43,15 +43,6 @@ model = DeepSpeakerModel()
 def index():
         return "Hello"
 
-@app.route('/aa/<name>', methods=["GET"])
-def test(name):
-     try:
-         return(f"Hello, {name}")
-          #audio = request.files
-          #return audio
-     except Exception as e:
-        return f"An Error occured: {e}" 
-
 @app.route('/train/<UID>', methods=["GET"])
 def train(UID):
     try:
@@ -67,11 +58,8 @@ def train(UID):
         
              
         mfcc = sample_from_mfcc(read_mfcc(file, SAMPLE_RATE), NUM_FRAMES)
-        
                 # Predict the speaker using the model
         prediction = model.m.predict(np.expand_dims(mfcc, axis=0))
-        
-
                 # Compute the cosine similarity with each reference speaker
         similarities = [batch_cosine_similarity(prediction, model.m.predict(np.expand_dims(sample_from_mfcc(read_mfcc(file, SAMPLE_RATE), NUM_FRAMES), axis=0))) for ref_speaker in UIDlist]
         predicted_speaker_index = np.argmax(similarities)
