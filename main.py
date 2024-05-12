@@ -6,6 +6,8 @@ from google.cloud import firestore
 #from firebase_admin import credentials
 from flask import g 
 import random
+import wave
+import librosa
 from pydub import AudioSegment
 #install /content/deep-speaker
 #numpy matplotlib.pyplot firebase_admin uuid flask google.cloud deep_speaker.audio deep_speaker.batcher deep_speaker.constants deep_speaker.conv_models deep_speaker.test  
@@ -136,21 +138,21 @@ def train(Uid):
             return 'No file provided', 400
         #gets file
         
-        file = request.files['audio']
-        wav = convert_to_wav(file)
-        fileslist.append(wav)
-        UIDlist.append(Uid)
+        audio_file = request.files['audio']
+        audio,sample_rate = librosa.load(audio_file, sr=16000)
 
-        #subprocess.call(['ffmpeg', 'i', file, 'audio.wav'])
-        mfcc = sample_from_mfcc(read_mfcc(wav, SAMPLE_RATE), NUM_FRAMES)
-                # Predict the speaker using the model
-        prediction = model.m.predict(np.expand_dims(mfcc, axis=0))
-                # Compute the cosine similarity with each reference speaker
+        fileslist.append(audio)
+        UIDlist.append(Uid)
+        
+        mfcc = sample_from_mfcc(librosa.feature.mfcc(y=audio,sr= SAMPLE_RATE), NUM_FRAMES)
+
+        prediction = model.m.predict(np.expand_dims(mfcc,axis=0))
+        # Compute the cosine similarity with each reference speaker
         similarities = [batch_cosine_similarity(prediction, model.m.predict(np.expand_dims(sample_from_mfcc(read_mfcc(x, SAMPLE_RATE), NUM_FRAMES), axis=0))) for x in fileslist]
         predicted_speaker_index = np.argmax(similarities)
         predicted_speaker = UIDlist[predicted_speaker_index]
-
-        return str("predicted_speaker")
+        
+        #return str(predicted_speaker)
     except Exception as e:
         return f"An Error occured: {e}"
 def gcp_entry(request):
