@@ -142,98 +142,29 @@ def train(Uid):
         audio,sample_rate = librosa.load(audio_file, sr=16000)
 
         fileslist.append(audio)
+        #add mfcc to it after manipulation
         UIDlist.append(Uid)
         
         mfcc = sample_from_mfcc(librosa.feature.mfcc(y=audio,sr= SAMPLE_RATE), NUM_FRAMES)
+        mfcc = np.expand_dims(mfcc, axis=0)
+        
+        #mfcc.reshape(1, 160, 64, 1)
+        mfcc = np.resize(mfcc, (1,160,64,1))
+        #prediction = model.m.predict(np.expand_dims(sample_from_mfcc(read_mfcc(voice, SAMPLE_RATE)), axis=0))
 
-        prediction = model.m.predict(np.expand_dims(mfcc,axis=0))
+        #prediction = model.m.predict()
+        prediction = model.m.predict(np.expand_dims(mfcc,-1))#.reshape(1, 160, 64, 1))
+        #model.m.predict(np.expand_dims(np.resize(sample_from_mfcc(librosa.feature.mfcc(y=audio,sr= SAMPLE_RATE), NUM_FRAMES), (1,160,64,1)),-1))
         # Compute the cosine similarity with each reference speaker
-        similarities = [batch_cosine_similarity(prediction, model.m.predict(np.expand_dims(sample_from_mfcc(read_mfcc(x, SAMPLE_RATE), NUM_FRAMES), axis=0))) for x in fileslist]
+        similarities = [batch_cosine_similarity(prediction, model.m.predict((np.expand_dims(np.resize(sample_from_mfcc(librosa.feature.mfcc(y=audio,sr= SAMPLE_RATE), NUM_FRAMES), (1,160,64,1)),-1)))) for x in fileslist]
         predicted_speaker_index = np.argmax(similarities)
         predicted_speaker = UIDlist[predicted_speaker_index]
+
         
-        #return str(predicted_speaker)
+        return str(predicted_speaker)
     except Exception as e:
         return f"An Error occured: {e}"
 def gcp_entry(request):
      return 'OK'
 if __name__ == '__main__':
      app.run(host='10.0.2.2',debug=True,port=8000)        
-""""
-@app.route('/verify', methods=['POST', 'GET'])
-def verify():
-    try: 
-        file = request.files["file"]
-        voice_ref = db.collection('features')
-        user = request.json['users']
-        voice = voice_ref.document(user)
-        
-        mfcc = sample_from_mfcc(read_mfcc(voice, SAMPLE_RATE), NUM_FRAMES)
-        
-                # Predict the speaker using the model
-        prediction = model.m.predict(np.expand_dims(mfcc, axis=0))
-
-                # Compute the cosine similarity with each reference speaker
-        similarities = [batch_cosine_similarity(prediction, model.m.predict(np.expand_dims(voice)))]
-
-        predicted_speaker_index = np.argmax(similarities)
-
-                # Get the predicted speaker
-        predicted_speaker = [predicted_speaker_index]
-        
-        prediction = model.m.predict(np.expand_dims(sample_from_mfcc(read_mfcc(voice, SAMPLE_RATE)), axis=0))
-
-                # Compute the cosine similarity with reference speakers trained on 'speakerX1' and 'speakerX2'
-        similarities = [batch_cosine_similarity(prediction, model.m.predict(np.expand_dims(sample_from_mfcc(read_mfcc(voice, SAMPLE_RATE), NUM_FRAMES), axis=0)))]
-
-                # Find the index of the reference speaker with the highest similarity
-        predicted_speaker_index = np.argmax(similarities)
-
-                # Get the predicted speaker
-        predicted_speaker = [predicted_speaker_index]
-
-        # Print the predicted speaker
-        print('Actual Speaker:', user)
-        print('Predicted Speaker:', predicted_speaker)
-
-
-        return jsonify({"success": True}), 200
-    except Exception as e:
-        return f"An Error occured: {e}"
-
-
-
-
-
-
-if __name__ == '__main__':
-    app.run(debug=True, threaded=True)
-##@firestore.transactional
-#def get_session_data(transaction, session_id):
-
-    
-
-
-@app.route('/train', method=['POST'])
-def train():
-    if request.method == 'POST':
-        if 'voice' not in request.voice:
-            return 'No voice found'
-   
-
-
-
-
-def identifyVoice(voice_path):
-    voice = 
-
-@app.route('/list', methods=['GET'])
-def read():
-
-
-
-
-@app.route('/delete', methods['GET', 'DELETE'])
-def delete():
-
-"""
