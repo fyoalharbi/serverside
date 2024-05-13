@@ -3,5 +3,5 @@ librosa==0.8.1
 pydub==0.25.1
 #deep-speaker==0.2.6
 tensorflow==2.12.0
-keras==3.3.3
+keras==2.12.0
 numpy==1.26.4
