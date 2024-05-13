@@ -1,8 +1,7 @@
-google-cloud-firestore==2.11.1
-flask==2.2.5
-numpy 
-matplotlib 
-firebase_admin
-uuid
-google.cloud
-
+Flask==2.0.2
+librosa==0.8.1
+pydub==0.25.1
+deep-speaker==0.2.6
+tensorflow==2.7.0
+keras==2.7.0
+numpy==1.21.5
