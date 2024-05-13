@@ -8,7 +8,7 @@ WORKDIR /app
 COPY . /app
 
 # Install Python dependencies
-RUN pip install numpy matplotlib firebase_admin uuid flask google-cloud-firestore deep-speaker
+RUN pip install numpy matplotlib firebase_admin uuid flask google-cloud-firestore deep-speaker multiprocessing librosa random wave 
 
 # Install dependencies listed in requirements.txt
 RUN pip install -r requirements.txt
