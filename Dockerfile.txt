@@ -1,17 +1,12 @@
 # Dockerfile
 FROM python:3.9
-
-# Set the working directory in the container
-WORKDIR /app
-
-# Copy the local directory contents into the container at /app
-COPY . /app
-
-# Install Python dependencies
-RUN pip install numpy matplotlib firebase_admin uuid flask google-cloud-firestore deep-speaker multiprocessing librosa random wave 
-
-# Install dependencies listed in requirements.txt
+ADD . .
+RUN pip install numpy matplotlib firebase_admin uuid flask google-cloud-firestore deep-speaker multiprocessing librosa random wave #deep_speaker.audio deep_speaker.batcher deep_speaker.constants deep_speaker.conv_models deep_speaker.test 
+#RUN apt-get update -y
+#RUN apt-get install -y python-pip python-dev build-essential
+COPY . ./
 RUN pip install -r requirements.txt
-
-# Command to run the Flask application
-CMD ["python", "./main.py"]
+#ENTRYPOINT ["python"]
+RUN pip install --no-cache-dir --upgrade pip
+RUN pip install --no-cache-dir -r requirements.txt
+CMD exec gunicorn --bind :$PORT --wokers 1 --threads 8 --timeout 0 app:app
