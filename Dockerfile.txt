@@ -1,12 +1,17 @@
 # Dockerfile
 FROM python:3.9
-ADD . .
-RUN pip install numpy matplotlib firebase_admin uuid flask google.cloud /deep-speaker  
-#deep_speaker.audio deep_speaker.batcher deep_speaker.constants deep_speaker.conv_models deep_speaker.test 
-#RUN apt-get update -y
-#RUN apt-get install -y python-pip python-dev build-essential
-COPY . /app
+
+# Set the working directory in the container
 WORKDIR /app
+
+# Copy the local directory contents into the container at /app
+COPY . /app
+
+# Install Python dependencies
+RUN pip install numpy matplotlib firebase_admin uuid flask google-cloud-firestore deep-speaker
+
+# Install dependencies listed in requirements.txt
 RUN pip install -r requirements.txt
-#ENTRYPOINT ["python"]
+
+# Command to run the Flask application
 CMD ["python", "./main.py"]
