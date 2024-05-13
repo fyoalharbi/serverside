@@ -63,4 +63,4 @@ def train(Uid):
         return f"An Error occurred: {e}"
 
 if name == 'main':
-     app.run(host='10.0.2.2', debug=True, port=8000)
+     app.run()
