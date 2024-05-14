@@ -46,13 +46,11 @@ def train(Uid):
 
         with UIDlist_lock:
             UIDlist.append(Uid)
-
+        
         mfcc = sample_from_mfcc(librosa.feature.mfcc(y=audio, sr=SAMPLE_RATE), NUM_FRAMES)
         mfcc = np.expand_dims(mfcc, axis=0)
         mfcc = np.resize(mfcc, (1, 160, 64, 1))
-
         prediction = model.m.predict(np.expand_dims(mfcc, -1))
-
         with fileslist_lock:
             similarities = [batch_cosine_similarity(prediction, model.m.predict(np.expand_dims(np.resize(sample_from_mfcc(librosa.feature.mfcc(y=x, sr=SAMPLE_RATE), NUM_FRAMES), (1, 160, 64, 1)),-1))) for x in fileslist]
             predicted_speaker_index = np.argmax(similarities)
@@ -62,5 +60,28 @@ def train(Uid):
     except Exception as e:
         return f"An Error occurred: {e}"
 
-if name == 'main':
-     app.run()
+@app.route('/auth', methods=["POST", "GET"])
+def auth():
+    try:
+        if 'audio' not in request.files:
+            return 'No file provided', 400
+
+        audio_file = request.files['audio']
+        audio, sample_rate = librosa.load(audio_file, sr=16000)
+
+        mfcc = sample_from_mfcc(librosa.feature.mfcc(y=audio, sr=SAMPLE_RATE), NUM_FRAMES)
+        mfcc = np.expand_dims(mfcc, axis=0)
+        mfcc = np.resize(mfcc, (1, 160, 64, 1))
+
+        prediction = model.m.predict(np.expand_dims(mfcc, -1))
+        with fileslist_lock:
+            similarities = [batch_cosine_similarity(prediction, model.m.predict(np.expand_dims(np.resize(sample_from_mfcc(librosa.feature.mfcc(y=x, sr=SAMPLE_RATE), NUM_FRAMES), (1, 160, 64, 1)),-1))) for x in fileslist]
+            predicted_speaker_index = np.argmax(similarities)
+            predicted_speaker = UIDlist[predicted_speaker_index]
+            #return str(similarities)
+        return str(predicted_speaker)
+    except Exception as e:
+        return f"An Error occurred: {e}"
+    
+if __name__ == 'main':
+     app.run(host='10.0.2.2', debug=True, port=8000)
